@@ -1,37 +1,33 @@
-name: Flutter CI
+name: Generate Changelog
 
 on:
   push:
-    branches: [main]
+    branches: [dev]
   pull_request:
-    branches: [main]
-  workflow_dispatch:  # ✅ 수동 실행 가능하게 해주는 핵심 부분
+    branches: [dev]
+  workflow_dispatch:  # ← 이게 있어야 gh workflow run 가능함
 
 jobs:
-  build:
+  changelog:
     runs-on: ubuntu-latest
 
     steps:
       - name: Checkout repository
         uses: actions/checkout@v3
 
-      - name: Set up Flutter
-        uses: subosito/flutter-action@v2
-        with:
-          flutter-version: '3.19.0'
+      - name: Set up Git
+        run: |
+          git config --global user.name "onbit-bot"
+          git config --global user.email "onbit-bot@users.noreply.github.com"
 
-      - name: Install dependencies
-        run: flutter pub get
+      - name: Generate changelog
+        run: |
+          echo "## 📦 Changelog (Last 20 commits)" > docs/CHANGELOG.md
+          echo "" >> docs/CHANGELOG.md
+          git log -n 20 --pretty=format:"- %h %s (%cr)" >> docs/CHANGELOG.md
 
-      - name: Analyze code
-        run: flutter analyze
-
-      - name: Run tests with coverage
-        run: flutter test --coverage
-
-      - name: Upload coverage to Codecov
-        uses: codecov/codecov-action@v4
-        with:
-          token: ${{ secrets.CODECOV_TOKEN }}
-          files: coverage/lcov.info
-          slug: hundeok/onbit_v2_triple
+      - name: Commit changelog
+        run: |
+          git add docs/CHANGELOG.md
+          git commit -m "docs: update changelog" || echo "No changes to commit"
+          git push
