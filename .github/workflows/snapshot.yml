@@ -1,0 +1,43 @@
+name: Generate Project Snapshot
+
+on:
+  push:
+    branches:
+      - dev
+  workflow_dispatch:
+
+jobs:
+  generate-snapshot:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Install tree
+        run: sudo apt-get install tree
+
+      - name: Generate project snapshot
+        run: |
+          echo "# 📦 Project Snapshot" > docs/project_snapshot.md
+          echo "Generated at: $(date)" >> docs/project_snapshot.md
+
+          echo -e "\n## 📁 Directory Tree\n" >> docs/project_snapshot.md
+          tree -I ".git|build|.dart_tool|.idea|.vscode|.DS_Store" -a -L 3 >> docs/project_snapshot.md
+
+          echo -e "\n## 📄 Git Status\n" >> docs/project_snapshot.md
+          git status >> docs/project_snapshot.md
+
+          echo -e "\n## 🧾 Git Log (Last 5)\n" >> docs/project_snapshot.md
+          git log --oneline -n 5 >> docs/project_snapshot.md
+
+      - name: Set Git config for bot
+        run: |
+          git config --global user.name "onbit-bot"
+          git config --global user.email "onbit-bot@users.noreply.github.com"
+
+      - name: Commit & push snapshot
+        run: |
+          git add docs/project_snapshot.md
+          git commit -m "docs: update project snapshot" || echo "No changes to commit"
+          git push
