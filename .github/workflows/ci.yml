@@ -1,23 +1,37 @@
-name: CI
+name: Flutter CI
+
 on:
   push:
-    branches: [ main, dev ]
+    branches: [main]
   pull_request:
-    branches: [ main, dev ]
+    branches: [main]
+  workflow_dispatch:  # ✅ 수동 실행 가능하게 해주는 핵심 부분
+
 jobs:
   build:
     runs-on: ubuntu-latest
+
     steps:
-      - uses: actions/checkout@v4
-      - uses: subosito/flutter-action@v2
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      - name: Set up Flutter
+        uses: subosito/flutter-action@v2
         with:
-          flutter-version: '3.19.x'
-      - run: flutter pub get
-      - run: flutter analyze
-      - run: flutter test --coverage
-      - uses: codecov/codecov-action@v4
+          flutter-version: '3.19.0'
+
+      - name: Install dependencies
+        run: flutter pub get
+
+      - name: Analyze code
+        run: flutter analyze
+
+      - name: Run tests with coverage
+        run: flutter test --coverage
+
+      - name: Upload coverage to Codecov
+        uses: codecov/codecov-action@v4
         with:
           token: ${{ secrets.CODECOV_TOKEN }}
-          file: coverage/lcov.info
-          flags: flutter
-          name: mac-local-run
+          files: coverage/lcov.info
+          slug: hundeok/onbit_v2_triple
