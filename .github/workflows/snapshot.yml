@@ -2,8 +2,7 @@ name: Generate Project Snapshot
 
 on:
   push:
-    branches:
-      - dev
+    branches: [main, dev]
   workflow_dispatch:
 
 jobs:
@@ -11,8 +10,7 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v3
+      - uses: actions/checkout@v3
 
       - name: Install tree
         run: sudo apt-get install tree
@@ -31,13 +29,10 @@ jobs:
           echo -e "\n## 🧾 Git Log (Last 5)\n" >> docs/project_snapshot.md
           git log --oneline -n 5 >> docs/project_snapshot.md
 
-      - name: Set Git config for bot
+      - name: Commit & push snapshot
         run: |
           git config --global user.name "onbit-bot"
           git config --global user.email "onbit-bot@users.noreply.github.com"
-
-      - name: Commit & push snapshot
-        run: |
           git add docs/project_snapshot.md
           git commit -m "docs: update project snapshot" || echo "No changes to commit"
           git push
