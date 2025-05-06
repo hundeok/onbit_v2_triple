@@ -1,37 +1,25 @@
-name: Flutter CI
-
+name: CI
 on:
   push:
-    branches: [main]
+    branches: [ main, dev ]
   pull_request:
-    branches: [main]
-  workflow_dispatch:
-
+    branches: [ main, dev ]
 jobs:
   build:
     runs-on: ubuntu-latest
-
     steps:
-      - name: Checkout repository
-        uses: actions/checkout@v3
-
-      - name: Set up Flutter
-        uses: subosito/flutter-action@v2
+      - uses: actions/checkout@v4
+      - uses: subosito/flutter-action@v2
         with:
-          flutter-version: '3.19.0'
-
-      - name: Install dependencies
-        run: flutter pub get
-
-      - name: Analyze code
-        run: flutter analyze
-
-      - name: Run tests with coverage
-        run: flutter test --coverage
-
-      - name: Upload coverage to Codecov
-        uses: codecov/codecov-action@v4
+          flutter-version: '3.19.x'
+      - run: flutter pub get
+      - run: flutter analyze
+      - run: flutter test --coverage
+      - uses: codecov/codecov-action@v4
         with:
           token: ${{ secrets.CODECOV_TOKEN }}
-          files: coverage/lcov.info
-          slug: hundeok/onbit_v2_triple
+          file: coverage/lcov.info
+          flags: flutter
+          name: mac-local-run
+          fail_ci_if_error: true
+      - run: flutter build apk --release --obfuscate --split-debug-info=build/app/outputs
