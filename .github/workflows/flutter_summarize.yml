@@ -1,0 +1,29 @@
+name: Flutter Summarize lib/ Structure
+
+on:
+  push:
+    branches: [dev]
+  workflow_dispatch:
+
+jobs:
+  summarize:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Generate module summary
+        run: |
+          mkdir -p docs
+          echo "## 🧱 Module Summary - lib/ 구조" > docs/module_summary.md
+          echo "" >> docs/module_summary.md
+          tree lib/ >> docs/module_summary.md
+
+      - name: Commit module summary
+        run: |
+          git config --global user.name "onbit-bot"
+          git config --global user.email "onbit-bot@users.noreply.github.com"
+          git add docs/module_summary.md
+          git commit -m "docs: update module summary" || echo "No changes to commit"
+          git push

@@ -1,0 +1,35 @@
+name: Flutter Changelog
+
+on:
+  push:
+    branches: [dev]
+  pull_request:
+    branches: [dev]
+  workflow_dispatch:
+
+jobs:
+  generate-changelog:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Set Git config
+        run: |
+          git config --global user.name "onbit-bot"
+          git config --global user.email "onbit-bot@users.noreply.github.com"
+
+      - name: Generate CHANGELOG.md
+        run: |
+          mkdir -p docs
+          echo "# 📝 Changelog" > docs/CHANGELOG.md
+          echo "Generated at: $(date)" >> docs/CHANGELOG.md
+          echo -e "\n## 🔄 Recent Commits\n" >> docs/CHANGELOG.md
+          git log --pretty=format:"- %s (%h)" -n 10 >> docs/CHANGELOG.md
+
+      - name: Commit changelog
+        run: |
+          git add docs/CHANGELOG.md
+          git commit -m "docs: update changelog" || echo "No changes to commit"
+          git push
