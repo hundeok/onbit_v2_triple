@@ -21,4 +21,3 @@ jobs:
           file: coverage/lcov.info
           flags: flutter
           name: mac-local-run
-      - run: flutter build apk --release --obfuscate --split-debug-info=build/app/outputs
