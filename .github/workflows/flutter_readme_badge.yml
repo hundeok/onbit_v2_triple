@@ -1,9 +1,9 @@
-name: Flutter Readme Badge
+name: Flutter README Badge
 
 on:
   push:
     branches: [main]
-  workflow_dispatch:
+  workflow_dispatch:  # ✨ 이게 반드시 들어가 있어야 함!!
 
 jobs:
   update-readme:
@@ -18,7 +18,7 @@ jobs:
           echo "🔧 Generating badges..."
 
           BADGES=$(cat <<EOF
-[![Build](https://github.com/${GITHUB_REPOSITORY}/actions/workflows/flutter_ci.yml/badge.svg)](https://github.com/${GITHUB_REPOSITORY}/actions/workflows/flutter_ci.yml)
+[![CI](https://github.com/${GITHUB_REPOSITORY}/actions/workflows/ci.yml/badge.svg)](https://github.com/${GITHUB_REPOSITORY}/actions/workflows/ci.yml)
 ![Branch](https://img.shields.io/badge/branch-main-blue)
 [![Coverage](https://codecov.io/gh/${GITHUB_REPOSITORY}/branch/main/graph/badge.svg)](https://codecov.io/gh/${GITHUB_REPOSITORY})
 EOF
