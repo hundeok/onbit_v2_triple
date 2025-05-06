@@ -11,16 +11,18 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - uses: actions/checkout@v3
+      - name: Checkout repository
+        uses: actions/checkout@v3
 
-      - uses: subosito/flutter-action@v2
+      - name: Set up Flutter
+        uses: subosito/flutter-action@v2
         with:
           flutter-version: '3.19.0'
 
       - name: Install dependencies
         run: flutter pub get
 
-      - name: Run analyzer
+      - name: Analyze code
         run: flutter analyze
 
       - name: Run tests with coverage
@@ -29,5 +31,6 @@ jobs:
       - name: Upload coverage to Codecov
         uses: codecov/codecov-action@v4
         with:
-          token: 5182d729-a03f-4417-8aea-7687b9307e84
+          token: ${{ secrets.CODECOV_TOKEN }}
           files: coverage/lcov.info
+          slug: hundeok/onbit_v2_triple

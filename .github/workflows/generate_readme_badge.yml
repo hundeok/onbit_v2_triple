@@ -18,13 +18,13 @@ jobs:
           echo "🔧 Generating badges..."
 
           BADGES=$(cat <<EOF
-![Build](https://github.com/${{ github.repository }}/actions/workflows/ci.yml/badge.svg)
+[![Build](https://github.com/${{ github.repository }}/actions/workflows/ci.yml/badge.svg)](https://github.com/${{ github.repository }}/actions/workflows/ci.yml)
 ![Branch](https://img.shields.io/badge/branch-main-blue)
-![Coverage](https://img.shields.io/codecov/c/github/${{ github.repository }})
+[![Coverage](https://codecov.io/gh/${{ github.repository }}/branch/main/graph/badge.svg)](https://codecov.io/gh/${{ github.repository }})
 EOF
 )
 
-          # Read original README and skip first 5 lines
+          # Skip 기존 README 상단 5줄
           TAIL_CONTENT=$(tail -n +6 README.md || echo "")
 
           echo -e "$BADGES\n\n$TAIL_CONTENT" > README.md
