@@ -31,8 +31,11 @@ jobs:
         run: flutter test --coverage
 
       - name: Upload coverage to Codecov
-        uses: codecov/codecov-action@v4
-        with:
-          token: ${{ secrets.CODECOV_TOKEN }}
-          files: coverage/lcov.info
-          slug: hundeok/onbit_v2_triple
+        - uses: codecov/codecov-action@v4
+  with:
+    token: ${{ secrets.CODECOV_TOKEN }}
+    file: coverage/lcov.info
+    flags: flutter
+    name: mac-local-run
+    fail_ci_if_error: true  # 에러 시 CI 실패
+    slug: hundeok/onbit_v2_triple  # 명시적 리포 경로
