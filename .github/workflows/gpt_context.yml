@@ -20,31 +20,23 @@ jobs:
 
       - name: Create GPT context files
         run: |
+          set -e  # 에러 발생 시 중단
           mkdir -p gpt_context
 
           echo "# 🧠 GPT Context Snapshot" > gpt_context/context.md
           echo "Generated at: $(date)" >> gpt_context/context.md
 
-          if [ -f README.md ]; then
-            echo -e "\n## 📄 README\n" >> gpt_context/context.md
-            cat README.md >> gpt_context/context.md
-          fi
+          [ -f README.md ] && echo -e "\n## 📄 README\n" >> gpt_context/context.md && cat README.md >> gpt_context/context.md
+          [ -f docs/CHANGELOG.md ] && echo -e "\n\n## 📝 Changelog\n" >> gpt_context/context.md && cat docs/CHANGELOG.md >> gpt_context/context.md
+          [ -f docs/module_summary.md ] && echo -e "\n\n## 📦 Module Summary\n" >> gpt_context/context.md && cat docs/module_summary.md >> gpt_context/context.md
 
-          if [ -f docs/CHANGELOG.md ]; then
-            echo -e "\n\n## 📝 Changelog\n" >> gpt_context/context.md
-            cat docs/CHANGELOG.md >> gpt_context/context.md
-          fi
-
-          if [ -f docs/module_summary.md ]; then
-            echo -e "\n\n## 📦 Module Summary\n" >> gpt_context/context.md
-            cat docs/module_summary.md >> gpt_context/context.md
-          fi
-
-          echo "{" > gpt_context/context.json
-          echo "\"readme\": $(cat README.md | jq -Rs .)," >> gpt_context/context.json
-          echo "\"changelog\": $(cat docs/CHANGELOG.md | jq -Rs .)," >> gpt_context/context.json
-          echo "\"module_summary\": $(cat docs/module_summary.md | jq -Rs .)" >> gpt_context/context.json
-          echo "}" >> gpt_context/context.json
+          {
+            echo "{"
+            echo "\"readme\": $([ -f README.md ] && cat README.md | jq -Rs . || echo "\"\""),"
+            echo "\"changelog\": $([ -f docs/CHANGELOG.md ] && cat docs/CHANGELOG.md | jq -Rs . || echo "\"\""),"
+            echo "\"module_summary\": $([ -f docs/module_summary.md ] && cat docs/module_summary.md | jq -Rs . || echo "\"\"")"
+            echo "}"
+          } > gpt_context/context.json
 
       - name: Commit & Push GPT context
         env:
