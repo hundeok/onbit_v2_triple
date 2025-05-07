@@ -54,3 +54,4 @@ codecov
 !gpt_context/
 !gpt_context/context.md
 !gpt_context/context.json
+/dev/
