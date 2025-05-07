@@ -2,19 +2,17 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:onbit_v2_triple/core/logger/app_logger.dart';
 
 void main() {
-  group('AppLogger', () {
-    final logger = AppLogger();
+  late AppLogger logger;
 
-    test('logInfo should not throw', () {
-      expect(() => logger.logInfo('Test Info'), returnsNormally);
-    });
+  setUp(() {
+    logger = AppLogger();
+  });
 
-    test('logWarning should not throw', () {
-      expect(() => logger.logWarning('Test Warning'), returnsNormally);
-    });
+  test('should log info message', () {
+    expect(() => logger.logInfo('Test info'), returnsNormally);
+  });
 
-    test('logError should not throw', () {
-      expect(() => logger.logError('Test Error'), returnsNormally);
-    });
+  test('should log error message', () {
+    expect(() => logger.logError('Test error', error: Exception('Test')), returnsNormally);
   });
 }

@@ -1,13 +1,9 @@
+import 'package:logger/logger.dart';
+
 class AppLogger {
-  void logInfo(String message) {
-    print('[INFO] $message');
-  }
+  static final Logger _logger = Logger();
 
-  void logWarning(String message) {
-    print('[WARNING] $message');
-  }
-
-  void logError(String message) {
-    print('[ERROR] $message');
-  }
+  void logInfo(String message) => _logger.i(message);
+  void logError(String message, {Object? error, StackTrace? stackTrace}) =>
+      _logger.e(message, error: error, stackTrace: stackTrace);
 }
