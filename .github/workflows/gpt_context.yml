@@ -13,7 +13,8 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v3
         with:
-          persist-credentials: true  # 중요! 푸시 가능하도록 설정
+          token: ${{ secrets.GITHUB_TOKEN }}  # ✅ push 권한 부여
+          persist-credentials: true
 
       - name: Ensure jq is available
         run: sudo apt-get update && sudo apt-get install -y jq
