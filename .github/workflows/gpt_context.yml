@@ -13,31 +13,34 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v3
 
-      - name: Generate GPT context markdown
+      - name: Create GPT context files
         run: |
           mkdir -p gpt_context
+
+          # markdown
           echo "# 🧠 GPT Context Snapshot" > gpt_context/context.md
           echo "Generated at: $(date)" >> gpt_context/context.md
 
-          if [ -f README.md ]; then
-            echo -e "\n## 📄 README\n" >> gpt_context/context.md
-            cat README.md >> gpt_context/context.md
-          fi
+          echo -e "\n## 📄 README\n" >> gpt_context/context.md
+          cat README.md >> gpt_context/context.md
 
-          if [ -f docs/CHANGELOG.md ]; then
-            echo -e "\n\n## 📝 Changelog\n" >> gpt_context/context.md
-            cat docs/CHANGELOG.md >> gpt_context/context.md
-          fi
+          echo -e "\n\n## 📝 Changelog\n" >> gpt_context/context.md
+          cat docs/CHANGELOG.md >> gpt_context/context.md
 
-          if [ -f docs/module_summary.md ]; then
-            echo -e "\n\n## 📦 Module Summary\n" >> gpt_context/context.md
-            cat docs/module_summary.md >> gpt_context/context.md
-          fi
+          echo -e "\n\n## 📦 Module Summary\n" >> gpt_context/context.md
+          cat docs/module_summary.md >> gpt_context/context.md
 
-      - name: Commit & Push Context Snapshot
+          # json
+          jq -n \
+            --arg readme "$(cat README.md)" \
+            --arg changelog "$(cat docs/CHANGELOG.md)" \
+            --arg module_summary "$(cat docs/module_summary.md)" \
+            '{readme: $readme, changelog: $changelog, module_summary: $module_summary}' > gpt_context/context.json
+
+      - name: Commit & Push GPT context
         run: |
           git config --global user.name "onbit-bot"
           git config --global user.email "onbit-bot@users.noreply.github.com"
-          git add gpt_context/context.md
+          git add gpt_context/context.md gpt_context/context.json
           git commit -m "docs: update GPT context snapshot" || echo "No changes to commit"
           git push
