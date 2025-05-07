@@ -13,39 +13,39 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v3
         with:
-          token: ${{ secrets.GITHUB_TOKEN }}  # ✅ push 권한 부여
-          persist-credentials: true
+          persist-credentials: true  # push 가능하게 설정
 
       - name: Ensure jq is available
         run: sudo apt-get update && sudo apt-get install -y jq
 
       - name: Create GPT context files
         run: |
+          set -e  # 하나라도 실패 시 중단
           mkdir -p gpt_context
 
           echo "# 🧠 GPT Context Snapshot" > gpt_context/context.md
           echo "Generated at: $(date)" >> gpt_context/context.md
 
-          if [ -f README.md ]; then
-            echo -e "\n## 📄 README\n" >> gpt_context/context.md
-            cat README.md >> gpt_context/context.md
-          fi
+          # Markdown 버전 생성
+          [ -f README.md ] && echo -e "\n## 📄 README\n" >> gpt_context/context.md && cat README.md >> gpt_context/context.md
+          [ -f docs/CHANGELOG.md ] && echo -e "\n\n## 📝 Changelog\n" >> gpt_context/context.md && cat docs/CHANGELOG.md >> gpt_context/context.md
+          [ -f docs/module_summary.md ] && echo -e "\n\n## 📦 Module Summary\n" >> gpt_context/context.md && cat docs/module_summary.md >> gpt_context/context.md
 
-          if [ -f docs/CHANGELOG.md ]; then
-            echo -e "\n\n## 📝 Changelog\n" >> gpt_context/context.md
-            cat docs/CHANGELOG.md >> gpt_context/context.md
-          fi
+          # JSON 버전 생성
+          README_JSON="\"\""
+          CHANGELOG_JSON="\"\""
+          MODULE_JSON="\"\""
 
-          if [ -f docs/module_summary.md ]; then
-            echo -e "\n\n## 📦 Module Summary\n" >> gpt_context/context.md
-            cat docs/module_summary.md >> gpt_context/context.md
-          fi
+          [ -f README.md ] && README_JSON=$(cat README.md | jq -Rs .)
+          [ -f docs/CHANGELOG.md ] && CHANGELOG_JSON=$(cat docs/CHANGELOG.md | jq -Rs .)
+          [ -f docs/module_summary.md ] && MODULE_JSON=$(cat docs/module_summary.md | jq -Rs .)
 
-          echo "{" > gpt_context/context.json
-          echo "\"readme\": $(cat README.md | jq -Rs .)," >> gpt_context/context.json
-          echo "\"changelog\": $(cat docs/CHANGELOG.md | jq -Rs .)," >> gpt_context/context.json
-          echo "\"module_summary\": $(cat docs/module_summary.md | jq -Rs .)" >> gpt_context/context.json
-          echo "}" >> gpt_context/context.json
+          echo "{\"readme\": $README_JSON, \"changelog\": $CHANGELOG_JSON, \"module_summary\": $MODULE_JSON}" > gpt_context/context.json
+
+      - name: List generated files (debug)
+        run: |
+          echo "=== gpt_context 디렉토리 ==="
+          ls -al gpt_context
 
       - name: Commit & Push GPT context
         run: |
