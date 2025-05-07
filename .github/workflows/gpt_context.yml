@@ -1,4 +1,4 @@
-name: Generate GPT Context
+name: GPT Context Snapshot
 
 on:
   workflow_dispatch:
@@ -10,45 +10,34 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout repository
+      - name: Checkout code
         uses: actions/checkout@v3
 
-      - name: Create context markdown
+      - name: Generate GPT context markdown
         run: |
-          mkdir -p docs
-          echo "# 🧠 GPT Project Context" > docs/gpt_context.md
-          echo "Generated at: $(date)" >> docs/gpt_context.md
-          echo -e "\n## 📌 Summary" >> docs/gpt_context.md
-          echo "- Project: onbit_v2_triple" >> docs/gpt_context.md
-          echo "- Goal: AI 기반 코인 실시간 감시 및 자동화 시스템 구축" >> docs/gpt_context.md
-          echo "- Structure: core / data / domain / presentation" >> docs/gpt_context.md
-          echo "- Features: GPT + Claude + Groq 3자 협업, CI/CD, 실시간 스트림 등" >> docs/gpt_context.md
-          echo -e "\n## 🔄 Recent Commits\n" >> docs/gpt_context.md
-          git log --pretty=format:"- %s (%h)" -n 10 >> docs/gpt_context.md
+          mkdir -p gpt_context
+          echo "# 🧠 GPT Context Snapshot" > gpt_context/context.md
+          echo "Generated at: $(date)" >> gpt_context/context.md
 
-      - name: Create context JSON
-        run: |
-          cat <<EOF > docs/gpt_context.json
-          {
-            "project": "onbit_v2_triple",
-            "goal": "AI 기반 코인 실시간 감시 및 자동화 시스템 구축",
-            "ai_architecture": ["GPT", "Claude", "Groq"],
-            "structure": ["core", "data", "domain", "presentation"],
-            "features": [
-              "실시간 코인 분석",
-              "3자 AI 협업 구조",
-              "자동화 트레이딩",
-              "CI/CD 워크플로우",
-              "Code coverage + badge system"
-            ],
-            "generated_at": "$(date +%Y-%m-%dT%H:%M:%S)"
-          }
-EOF
+          if [ -f README.md ]; then
+            echo -e "\n## 📄 README\n" >> gpt_context/context.md
+            cat README.md >> gpt_context/context.md
+          fi
 
-      - name: Commit context files
+          if [ -f docs/CHANGELOG.md ]; then
+            echo -e "\n\n## 📝 Changelog\n" >> gpt_context/context.md
+            cat docs/CHANGELOG.md >> gpt_context/context.md
+          fi
+
+          if [ -f docs/module_summary.md ]; then
+            echo -e "\n\n## 📦 Module Summary\n" >> gpt_context/context.md
+            cat docs/module_summary.md >> gpt_context/context.md
+          fi
+
+      - name: Commit & Push Context Snapshot
         run: |
           git config --global user.name "onbit-bot"
           git config --global user.email "onbit-bot@users.noreply.github.com"
-          git add docs/gpt_context.*
-          git commit -m "docs: update GPT context in markdown and JSON" || echo "No changes to commit"
+          git add gpt_context/context.md
+          git commit -m "docs: update GPT context snapshot" || echo "No changes to commit"
           git push
