@@ -13,28 +13,40 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v3
 
+      - name: Ensure jq is available
+        run: sudo apt-get update && sudo apt-get install -y jq
+
       - name: Create GPT context files
         run: |
           mkdir -p gpt_context
 
-          # markdown
+          # fallback if file doesn't exist
+          function safe_cat() {
+            if [ -f "$1" ]; then
+              cat "$1"
+            else
+              echo "⚠️ File not found: $1"
+            fi
+          }
+
+          # markdown version
           echo "# 🧠 GPT Context Snapshot" > gpt_context/context.md
           echo "Generated at: $(date)" >> gpt_context/context.md
 
           echo -e "\n## 📄 README\n" >> gpt_context/context.md
-          cat README.md >> gpt_context/context.md
+          safe_cat README.md >> gpt_context/context.md
 
           echo -e "\n\n## 📝 Changelog\n" >> gpt_context/context.md
-          cat docs/CHANGELOG.md >> gpt_context/context.md
+          safe_cat docs/CHANGELOG.md >> gpt_context/context.md
 
           echo -e "\n\n## 📦 Module Summary\n" >> gpt_context/context.md
-          cat docs/module_summary.md >> gpt_context/context.md
+          safe_cat docs/module_summary.md >> gpt_context/context.md
 
-          # json
+          # json version
           jq -n \
-            --arg readme "$(cat README.md)" \
-            --arg changelog "$(cat docs/CHANGELOG.md)" \
-            --arg module_summary "$(cat docs/module_summary.md)" \
+            --arg readme "$(safe_cat README.md)" \
+            --arg changelog "$(safe_cat docs/CHANGELOG.md)" \
+            --arg module_summary "$(safe_cat docs/module_summary.md)" \
             '{readme: $readme, changelog: $changelog, module_summary: $module_summary}' > gpt_context/context.json
 
       - name: Commit & Push GPT context
