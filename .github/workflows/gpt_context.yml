@@ -38,10 +38,10 @@ jobs:
             cat docs/module_summary.md >> gpt_context/context.md
           fi
 
-          # JSON 버전
-          README_JSON=""
-          CHANGELOG_JSON=""
-          MODULE_JSON=""
+          # JSON 버전 안전 생성
+          README_JSON="\"\""
+          CHANGELOG_JSON="\"\""
+          MODULE_JSON="\"\""
 
           if [ -f README.md ]; then
             README_JSON=$(cat README.md | jq -Rs .)
@@ -59,6 +59,7 @@ jobs:
         run: |
           git config --global user.name "onbit-bot"
           git config --global user.email "onbit-bot@users.noreply.github.com"
+          git pull origin main || true
           git add gpt_context/context.md gpt_context/context.json
-          git commit -m "docs: update GPT context snapshot" || echo "No changes to commit"
-          git push
+          git diff --staged --quiet || git commit -m "docs: update GPT context snapshot"
+          git push origin main
