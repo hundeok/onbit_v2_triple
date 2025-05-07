@@ -31,5 +31,5 @@ jobs:
       - name: Commit changelog
         run: |
           git add docs/CHANGELOG.md
-          git commit -m "docs: update changelog" || echo "No changes to commit"
+          git diff --cached --quiet && echo "No changes to commit" || git commit -m "docs: update changelog"
           git push
