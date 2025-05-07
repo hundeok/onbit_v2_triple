@@ -1,8 +1,35 @@
-- name: Upload coverage to Codecov
-  uses: codecov/codecov-action@v3
-  with:
-    token: ${{ secrets.CODECOV_TOKEN }}
-    files: coverage/lcov.info
-    flags: unittests
-    name: codecov-onbitv2
-    fail_ci_if_error: true
+name: Trigger Codecov
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  coverage:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      - name: Set up Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          flutter-version: '3.19.6'  # 너가 쓰는 Flutter 버전 넣어줘
+
+      - name: Install dependencies
+        run: flutter pub get
+
+      - name: Run tests with coverage
+        run: flutter test --coverage
+
+      - name: Upload coverage to Codecov
+        uses: codecov/codecov-action@v3
+        with:
+          token: ${{ secrets.CODECOV_TOKEN }}
+          files: coverage/lcov.info
+          flags: unittests
+          name: codecov-onbitv2
+          fail_ci_if_error: true
