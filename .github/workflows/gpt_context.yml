@@ -12,6 +12,8 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v3
+        with:
+          persist-credentials: true  # 중요! 푸시 가능하도록 설정
 
       - name: Ensure jq is available
         run: sudo apt-get update && sudo apt-get install -y jq
@@ -38,28 +40,16 @@ jobs:
             cat docs/module_summary.md >> gpt_context/context.md
           fi
 
-          # JSON 버전 안전 생성
-          README_JSON="\"\""
-          CHANGELOG_JSON="\"\""
-          MODULE_JSON="\"\""
-
-          if [ -f README.md ]; then
-            README_JSON=$(cat README.md | jq -Rs .)
-          fi
-          if [ -f docs/CHANGELOG.md ]; then
-            CHANGELOG_JSON=$(cat docs/CHANGELOG.md | jq -Rs .)
-          fi
-          if [ -f docs/module_summary.md ]; then
-            MODULE_JSON=$(cat docs/module_summary.md | jq -Rs .)
-          fi
-
-          echo "{\"readme\": $README_JSON, \"changelog\": $CHANGELOG_JSON, \"module_summary\": $MODULE_JSON}" > gpt_context/context.json
+          echo "{" > gpt_context/context.json
+          echo "\"readme\": $(cat README.md | jq -Rs .)," >> gpt_context/context.json
+          echo "\"changelog\": $(cat docs/CHANGELOG.md | jq -Rs .)," >> gpt_context/context.json
+          echo "\"module_summary\": $(cat docs/module_summary.md | jq -Rs .)" >> gpt_context/context.json
+          echo "}" >> gpt_context/context.json
 
       - name: Commit & Push GPT context
         run: |
           git config --global user.name "onbit-bot"
           git config --global user.email "onbit-bot@users.noreply.github.com"
-          git pull origin main || true
           git add gpt_context/context.md gpt_context/context.json
-          git diff --staged --quiet || git commit -m "docs: update GPT context snapshot"
-          git push origin main
+          git commit -m "docs: update GPT context snapshot" || echo "No changes to commit"
+          git push
