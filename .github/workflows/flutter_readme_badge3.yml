@@ -6,6 +6,10 @@ on:
       - main
   workflow_dispatch: {}
 
+concurrency:
+  group: "readme-badge"
+  cancel-in-progress: true
+
 jobs:
   update-readme:
     runs-on: ubuntu-latest
@@ -25,4 +29,3 @@ jobs:
           git add README.md
           git diff --quiet && git diff --staged --quiet || git commit -m "🔄 README test badge"
           git push
-
