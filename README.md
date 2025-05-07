@@ -1,7 +1,7 @@
 # 🧠 onbit_v2_triple
 
-[![CI](https://github.com/hundeok/onbit_v2_triple/actions/workflows/ci.yml/badge.svg)](https://github.com/hundeok/onbit_v2_triple/actions/workflows/ci.yml)
-[![codecov](https://codecov.io/gh/hundeok/onbit_v2_triple/branch/main/graph/badge.svg?token=5182d729-a03f-4417-8aea-7687b9307e84)](https://codecov.io/gh/hundeok/onbit_v2_triple)
+[![Flutter CI](https://github.com/hundeok/onbit_v2_triple/actions/workflows/flutter_ci.yml/badge.svg)](https://github.com/hundeok/onbit_v2_triple/actions/workflows/flutter_ci.yml)
+[![Code Coverage](https://codecov.io/gh/hundeok/onbit_v2_triple/branch/main/graph/badge.svg?token=5182d729-a03f-4417-8aea-7687b9307e84)](https://codecov.io/gh/hundeok/onbit_v2_triple)
 ![Branch](https://img.shields.io/badge/branch-main-blue)
 
 ---
