@@ -1,0 +1,37 @@
+name: GPT Context Snapshot
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+
+jobs:
+  generate-context:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Combine GPT context
+        run: |
+          mkdir -p gpt_context
+          echo "# 🧠 GPT Context Snapshot" > gpt_context/context.md
+          echo "Generated at: $(date)" >> gpt_context/context.md
+
+          echo -e "\n## 📄 README\n" >> gpt_context/context.md
+          cat README.md >> gpt_context/context.md
+
+          echo -e "\n\n## 📝 Changelog\n" >> gpt_context/context.md
+          cat docs/CHANGELOG.md >> gpt_context/context.md
+
+          echo -e "\n\n## 📦 Module Summary\n" >> gpt_context/context.md
+          cat docs/module_summary.md >> gpt_context/context.md
+
+      - name: Commit & Push Context Snapshot
+        run: |
+          git config --global user.name "onbit-bot"
+          git config --global user.email "onbit-bot@users.noreply.github.com"
+          git add gpt_context/context.md
+          git commit -m "docs: update GPT context snapshot" || echo "No changes to commit"
+          git push
