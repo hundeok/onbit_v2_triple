@@ -26,5 +26,5 @@ jobs:
           git config --global user.name "onbit-bot"
           git config --global user.email "onbit-bot@users.noreply.github.com"
           git add docs/module_summary.md
-          git commit -m "docs: update module summary" || echo "No changes to commit"
+          git diff --cached --quiet && echo "No changes to commit" || git commit -m "docs: update module summary"
           git push
