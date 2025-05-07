@@ -20,34 +20,40 @@ jobs:
         run: |
           mkdir -p gpt_context
 
-          # fallback if file doesn't exist
-          function safe_cat() {
-            if [ -f "$1" ]; then
-              cat "$1"
-            else
-              echo "⚠️ File not found: $1"
-            fi
-          }
-
-          # markdown version
           echo "# 🧠 GPT Context Snapshot" > gpt_context/context.md
           echo "Generated at: $(date)" >> gpt_context/context.md
 
-          echo -e "\n## 📄 README\n" >> gpt_context/context.md
-          safe_cat README.md >> gpt_context/context.md
+          if [ -f README.md ]; then
+            echo -e "\n## 📄 README\n" >> gpt_context/context.md
+            cat README.md >> gpt_context/context.md
+          fi
 
-          echo -e "\n\n## 📝 Changelog\n" >> gpt_context/context.md
-          safe_cat docs/CHANGELOG.md >> gpt_context/context.md
+          if [ -f docs/CHANGELOG.md ]; then
+            echo -e "\n\n## 📝 Changelog\n" >> gpt_context/context.md
+            cat docs/CHANGELOG.md >> gpt_context/context.md
+          fi
 
-          echo -e "\n\n## 📦 Module Summary\n" >> gpt_context/context.md
-          safe_cat docs/module_summary.md >> gpt_context/context.md
+          if [ -f docs/module_summary.md ]; then
+            echo -e "\n\n## 📦 Module Summary\n" >> gpt_context/context.md
+            cat docs/module_summary.md >> gpt_context/context.md
+          fi
 
-          # json version
-          jq -n \
-            --arg readme "$(safe_cat README.md)" \
-            --arg changelog "$(safe_cat docs/CHANGELOG.md)" \
-            --arg module_summary "$(safe_cat docs/module_summary.md)" \
-            '{readme: $readme, changelog: $changelog, module_summary: $module_summary}' > gpt_context/context.json
+          # JSON 버전
+          README_JSON=""
+          CHANGELOG_JSON=""
+          MODULE_JSON=""
+
+          if [ -f README.md ]; then
+            README_JSON=$(cat README.md | jq -Rs .)
+          fi
+          if [ -f docs/CHANGELOG.md ]; then
+            CHANGELOG_JSON=$(cat docs/CHANGELOG.md | jq -Rs .)
+          fi
+          if [ -f docs/module_summary.md ]; then
+            MODULE_JSON=$(cat docs/module_summary.md | jq -Rs .)
+          fi
+
+          echo "{\"readme\": $README_JSON, \"changelog\": $CHANGELOG_JSON, \"module_summary\": $MODULE_JSON}" > gpt_context/context.json
 
       - name: Commit & Push GPT context
         run: |
