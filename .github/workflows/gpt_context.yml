@@ -4,25 +4,29 @@ on:
   workflow_dispatch:
   push:
     branches: [main]
+  schedule:
+    - cron: '18 18 * * *'  # 매일 03:18 KST 실행 (UTC 기준)
 
 jobs:
   generate-context:
-    runs-on: ubuntu-latest
+    runs-on: macos-latest
 
     steps:
       - name: Checkout code
         uses: actions/checkout@v3
 
       - name: Ensure jq is available
-        run: sudo apt-get update && sudo apt-get install -y jq
+        run: brew install jq
 
       - name: Create GPT context files
         run: |
           set -e
           mkdir -p gpt_context
 
+          export KST_DATE=$(TZ=Asia/Seoul date "+%Y-%m-%d %H:%M:%S KST")
+
           echo "# 🧠 GPT Context Snapshot" > gpt_context/context.md
-          echo "Generated at: $(date)" >> gpt_context/context.md
+          echo "Generated at: $KST_DATE" >> gpt_context/context.md
 
           [ -f README.md ] && echo -e "\n## 📄 README\n" >> gpt_context/context.md && cat README.md >> gpt_context/context.md
           [ -f docs/CHANGELOG.md ] && echo -e "\n\n## 📝 Changelog\n" >> gpt_context/context.md && cat docs/CHANGELOG.md >> gpt_context/context.md
