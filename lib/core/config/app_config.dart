@@ -1,4 +1,12 @@
-import 'package:onbit_v2_triple/data/datasources/market_data_source.dart';
+// lib/core/config/app_config.dart
+
+// 명시적으로 ExchangePlatform enum 추가
+enum ExchangePlatform {
+  upbit,
+  binance,
+  bybit,
+  bithumb,
+}
 
 class AppConfig {
   static const List<double> tradeFilters = [
@@ -48,4 +56,8 @@ class AppConfig {
 
   static const int mergeWindowMs = 1000;
   static const ExchangePlatform defaultPlatform = ExchangePlatform.upbit;
+
+  static const double momentaryMinAmount = 500000.0;
+  static const double momentaryThreshold = 2000000.0;
+  static const double surgeThreshold = 1.1;
 }
