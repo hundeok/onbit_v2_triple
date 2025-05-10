@@ -1,7 +1,7 @@
 name: Append Today Dart Log
 
 on:
-  workflow_dispatch:    # 수동 실행을 위한 트리거
+  workflow_dispatch:
 
 jobs:
   append-log:
@@ -10,6 +10,8 @@ jobs:
     steps:
       - name: Checkout repo
         uses: actions/checkout@v3
+        with:
+          fetch-depth: 0  # 전체 히스토리 가져오기
 
       - name: Set current date
         run: echo "NOW=$(date '+%Y-%m-%d %H:%M')" >> $GITHUB_ENV
@@ -18,30 +20,30 @@ jobs:
         run: |
           git config --global user.name "github-actions"
           git config --global user.email "actions@github.com"
-          git pull --rebase || true
+          git pull --rebase origin main || true
 
       - name: Append modified Dart files to log
         run: |
-          mkdir -p gpt_context
-          LOG_FILE="gpt_context/today_log.md"
+          LOG_FILE="docs/append_dart_log.md"
+          mkdir -p docs
+          touch $LOG_FILE
           echo "" >> $LOG_FILE
           echo "## 🕒 $NOW" >> $LOG_FILE
           echo "" >> $LOG_FILE
 
-          # 파일 목록 추출
-          FILES=$(git diff --name-only --diff-filter=ACM $(git log --since=midnight -1 --format=%H) | grep '\.dart$' | sort)
-
-          # 변경된 파일이 없다면 종료
+          LAST_COMMIT=$(git log --since=midnight -1 --format=%H)
+          echo "Last commit: $LAST_COMMIT"
+          FILES=$(git diff --name-only --diff-filter=ACM $LAST_COMMIT | grep '\.dart$' | sort)
+          echo "Detected files: $FILES"
           if [ -z "$FILES" ]; then
-            echo "No Dart file changes today."
+            echo "No Dart file changes today." >> $LOG_FILE
             exit 0
           fi
-
-          # 수정된 파일을 로그에 추가
           echo "$FILES" | sed 's/^/- /' >> $LOG_FILE
 
       - name: Commit and push updated log
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
-          git add gpt_context/today_log.md
-          git commit -m "docs: update Dart log @ $NOW" || echo "⚠️ No changes to commit"
-          git push || echo "⚠️ Push failed (possibly no new commit)"
+          git add docs/append_dart_log.md
+          git commit -m
