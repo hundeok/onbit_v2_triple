@@ -31,19 +31,27 @@ jobs:
           echo "## 🕒 $NOW" >> $LOG_FILE
           echo "" >> $LOG_FILE
 
-          LAST_COMMIT=$(git log --since=midnight -1 --format=%H)
+          LAST_COMMIT=$(git log --since="24 hours ago" -1 --format=%H)
           echo "Last commit: $LAST_COMMIT"
-          FILES=$(git diff --name-only --diff-filter=ACM $LAST_COMMIT | grep '\.dart$' | sort)
+          FILES=$(git diff --name-only --diff-filter=ACM HEAD^ HEAD | grep '\.dart$' | sort)
           echo "Detected files: $FILES"
           if [ -z "$FILES" ]; then
-            echo "No Dart file changes today." >> $LOG_FILE
-            exit 0
+            echo "No Dart file changes detected." >> $LOG_FILE
+          else
+            echo "$FILES" | sed 's/^/- /' >> $LOG_FILE
           fi
-          echo "$FILES" | sed 's/^/- /' >> $LOG_FILE
+
+      - name: Debug log file and Git status
+        run: |
+          echo "Content of append_dart_log.md:"
+          cat docs/append_dart_log.md
+          echo "Git status:"
+          git status
 
       - name: Commit and push updated log
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           git add docs/append_dart_log.md
-          git commit -m
+          git commit -m "docs: update Dart log @ $NOW" || true
+          git push https://x-access-token:${GITHUB_TOKEN}@github.com/hundeok/onbit_v2_triple.git || echo "⚠️ Push failed"
