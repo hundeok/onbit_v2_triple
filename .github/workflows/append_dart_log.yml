@@ -7,6 +7,10 @@ on:
   pull_request:
     branches: [main, dev]
 
+concurrency:
+  group: append-dart-log-${{ github.ref }}
+  cancel-in-progress: true
+
 jobs:
   append-log:
     runs-on: ubuntu-latest
@@ -20,11 +24,12 @@ jobs:
       - name: Set current date
         run: echo "NOW=$(date '+%Y-%m-%d %H:%M %Z')" >> $GITHUB_ENV
 
-      - name: Pull latest to avoid conflicts
+      - name: Fetch and merge latest changes
         run: |
           git config --global user.name "onbit-bot"
           git config --global user.email "onbit-bot@users.noreply.github.com"
-          git pull --rebase origin ${GITHUB_REF_NAME} || true
+          git fetch origin
+          git merge origin/${GITHUB_REF_NAME} || { echo "Merge conflict detected, attempting to resolve"; git merge --abort; git pull --rebase origin ${GITHUB_REF_NAME}; }
 
       - name: Generate Dart change log
         run: |
