@@ -1,8 +1,7 @@
 # 🧠 GPT Context Snapshot
-Generated at: 2025-05-10 18:39:40 KST
+Generated at: 2025-05-10 19:32:11 KST
 
 ## 📄 README
-
 # 🧠 onbit_v2_triple
 
 [![Flutter CI](https://github.com/hundeok/onbit_v2_triple/actions/workflows/flutter_ci.yml/badge.svg)](https://github.com/hundeok/onbit_v2_triple/actions/workflows/flutter_ci.yml)  
@@ -259,7 +258,6 @@ lib/
 
 
 ## 📝 Changelog
-
 # 📝 Changelog
 Generated at: #오후
 
@@ -277,7 +275,6 @@ Generated at: #오후
 - Fix: set Flutter SDK to 3.22.1 for Dart 3.4 compatibility (5220c0d)
 
 ## 📦 Module Summary
-
 ## 🧱 Module Summary - lib/ 구조
 
 lib/
