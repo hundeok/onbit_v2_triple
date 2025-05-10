@@ -1,6 +1,3 @@
-// lib/core/config/app_config.dart
-
-// 명시적으로 ExchangePlatform enum 추가
 enum ExchangePlatform {
   upbit,
   binance,
@@ -9,6 +6,8 @@ enum ExchangePlatform {
 }
 
 class AppConfig {
+  static const ExchangePlatform defaultPlatform = ExchangePlatform.upbit;
+
   static const List<double> tradeFilters = [
     2000000.0,
     5000000.0,
@@ -55,9 +54,13 @@ class AppConfig {
   };
 
   static const int mergeWindowMs = 1000;
-  static const ExchangePlatform defaultPlatform = ExchangePlatform.upbit;
-
   static const double momentaryMinAmount = 500000.0;
   static const double momentaryThreshold = 2000000.0;
   static const double surgeThreshold = 1.1;
+  static const Duration surgeWindow = Duration(minutes: 1);
+  static const double defaultMinPrice = 40000.0;
+  static const double defaultMaxPrice = 60000.0;
+  static const double defaultMinVolume = 0.5;
+  static const double defaultMinTotal = 40000.0;
+  static const int defaultVolumeTimeFrame = 1;
 }

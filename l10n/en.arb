@@ -1,0 +1,10 @@
+{
+  "@@locale": "en",
+  "hello": "Hello",
+  "welcome": "Welcome to Onbit!",
+  "retry": "Retry",
+  "loading": "Loading...",
+  "error": "An unexpected error occurred.",
+  "start": "Start",
+  "settings": "Settings"
+}

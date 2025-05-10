@@ -1,43 +1,52 @@
 # 🧠 GPT Context Snapshot
-Generated at: 2025-05-08 12:39:46 KST
+Generated at: 2025-05-10 18:39:40 KST
 
 ## 📄 README
 
 # 🧠 onbit_v2_triple
 
-[![Flutter CI](https://github.com/hundeok/onbit_v2_triple/actions/workflows/flutter_ci.yml/badge.svg)](https://github.com/hundeok/onbit_v2_triple/actions/workflows/flutter_ci.yml)
-[![Code Coverage](https://codecov.io/gh/hundeok/onbit_v2_triple/branch/main/graph/badge.svg?token=5182d729-a03f-4417-8aea-7687b9307e84)](https://codecov.io/gh/hundeok/onbit_v2_triple)
+[![Flutter CI](https://github.com/hundeok/onbit_v2_triple/actions/workflows/flutter_ci.yml/badge.svg)](https://github.com/hundeok/onbit_v2_triple/actions/workflows/flutter_ci.yml)  
+[![Code Coverage](https://codecov.io/gh/hundeok/onbit_v2_triple/branch/main/graph/badge.svg?token=5182d729-a03f-4417-8aea-7687b9307e84)](https://codecov.io/gh/hundeok/onbit_v2_triple)  
 ![Branch](https://img.shields.io/badge/branch-main-blue)
 
 ---
 
 ## 🧠 프로젝트 개요
 
-**AI 기반 트리플 협업 코인 프로젝트**  
-GPT + Claude + Groq 구조로 구성된 초고속 자동화 시스템.  
-실전 클린 아키텍처 기준으로 설계된 고성능 크립토 분석 앱입니다.
+**AI × 실시간 하이브리드 트레이딩 시스템**  
+GPT + Claude + Groq 기반의 트리플 협업 자동화 구조.  
+WebSocket + REST API 하이브리드 통신 체제를 도입하여  
+**“실시간성 × 안정성”**을 동시에 확보한 고성능 코인 분석 앱입니다.
 
 ---
 
-## 🧩 프로젝트 구조
+## 🧩 아키텍처 구조
 
-- `core/` → 공통 유틸, DI, 설정, 테마, 라우팅
-- `data/` → API, 소켓, DB 등 구현체
-- `domain/` → Entity, Repository 인터페이스, UseCase
-- `presentation/` → UI, 컨트롤러, 상태관리
+core/
+├── socket/ ← WebSocket 커넥션 전담
+├── api/ ← Dio 기반 REST 처리
+├── bridge/ ← 소켓/REST 데이터 허브 (옵션)
+data/
+├── sources/ ← socket_, rest_ 분리
+├── repositories/ ← 실시간 + 백업 소스 통합
+domain/
+├── entities/, usecases/, repositories/
+presentation/
+├── controllers/, pages/, widgets/
+
 
 > ✅ `4 Layer Clean Architecture`  
 > ✅ `GetX 기반 단방향 흐름`  
-> ✅ `AI 협업 + 유지보수 최적화`
+> ✅ `WebSocket 주도 + REST 백업 하이브리드 체계`
 
 ---
 
-## ✅ 기능 목표
+## ✅ 주요 기능
 
-- 실시간 코인 트레이드 데이터 분석 및 시각화
-- AI 3단계 협업 기반 전략 설계 로직 탑재
-- 자동화 트레이딩 & 실시간 알림 이벤트 처리
-- 기술 부채 최소화 + 확장성과 생산성 최우선 구조
+- 실시간 체결 데이터 감지 및 누적 시각화
+- 소켓 기반 고속 반응 시스템 + REST 초기화 로직
+- 트리플 AI 협업 (GPT/Claude/Groq) 로직 통합
+- 자동화 시그널 감지 + 조건 기반 트레이딩 구조화
 
 ---
 
@@ -52,71 +61,202 @@ flutter run
 flutter test
 flutter test --coverage
 통합 테스트: test/integration/app_flow_test.dart
-커버리지 목표: 80% 이상
-활용 도구: mockito, patrol, mock_server
+커버리지 목표: 80%+
+사용 툴: mockito, patrol, mock_server
 🧠 설계 철학
 
 항목	기준
 파일명	snake_case.dart
 클래스명	PascalCase
 import 규칙	같은 레이어: 상대경로 / 크로스 레이어: package:onbit_v2_triple/
-DI 구조	Get.lazyPut(() => X(), tag: 'data.xxx'), fenix: false
-에러 핸들링	Result<T> or Either<Failure, T> + .fold() + 메시지 매핑
-상태 공유	Controller 단위 최소화, Get.putAsync() 실패 시 재시도 포함
-기술 부채 추적	// TODO: [TECH-DEBT] + GitHub Issues + P1/P2/P3 태그
-🌍 다국어 지원 (i18n)
+DI 구조	Get.lazyPut(() => X(), tag: 'data.xxx')
+에러 처리	Either<Failure, T> + .fold() 처리
+상태 공유	GetX Controller 최소화 + .putAsync() 재시도 포함
+기술부채 추적	// TODO: [TECH-DEBT] + GitHub Issues 연결
+🌍 다국어 지원
 
-arb 파일: en.arb, ko.arb
-flutter gen-l10n 자동 생성
-l10n.yaml: nullable-getter: false 설정
-🚧 CI/CD
+.arb 파일 (en.arb, ko.arb)
+flutter gen-l10n 자동화
+l10n.yaml: nullable-getter: false
+🔄 통신 체제 (하이브리드 전략)
 
-GitHub Actions 자동화 파이프라인:
+흐름	기술	주기
+초기 로딩	REST	앱 진입 시 1회
+실시간 체결 감시	WebSocket	상시 연결 유지
+리프레시 백업	REST	30초~2분 간격 또는 실패 시
+소켓 실패 대비	REST fallback	즉시
+WebSocket = 실시간, 빠름
+REST = 백업, 정합성 보완
+🚧 CI/CD 자동화
+
+GitHub Actions
 flutter analyze
 flutter test
 flutter build --release --obfuscate
 flutter build --analyze-size
-문서 포함: CHANGELOG.md, CONTRIBUTING.md
-브랜치 네이밍 규칙:
+문서: CHANGELOG.md, CONTRIBUTING.md
+브랜치 네이밍:
 feature/socket-stream
 fix/trade-bug
 📈 성능 모니터링
 
-PerformanceOverlay 사용 + build --profile 모드
-StreamQueue 메모리 최적화, compute() 구조 점검
-Rx: throttle, debounce 연산 적용
-🔐 프로덕션 디테일
+PerformanceOverlay + profile 빌드
+StreamQueue/compute() 최적화
+Rx throttle/debounce 연산 사용
+🔐 프로덕션 대응
 
-보안:
-SSL 핀닝 (Dio 인증서 고정)
-Secure Storage → timeout + catch 처리
-로깅:
-10MB 이상 자동 로그 회전
-gzip 압축 + Crashlytics 연동
-UX 안정성:
-Skeleton Loader, Fallback UI
-ConnectionStatusBar 상태 표시 및 재시도 버튼
+SSL 핀닝 (Dio)
+Secure Storage → timeout + catch
+Crashlytics + 로그 gzip 압축 로테이션
+UX 안정화: Skeleton Loader, Fallback UI, 상태 표시 바
 📦 실행 우선순위 (Phase 1)
 
-core/config/app_config.dart, env_config.dart
-data/datasources/socket_trade_source.dart
-presentation/widgets/trade_card.dart, skeleton_loader.dart
-domain/usecases/get_filtered_trades.dart
+core/socket/socket_service.dart
+data/sources/socket_trade_source.dart
+presentation/widgets/trade_card.dart
+domain/usecases/subscribe_live_trades.dart
 test/integration/app_flow_test.dart
 📎 문서 & 참고
 
-docs/extension_points.md → 기능 확장 기준
-analysis_options.yaml → 정적 분석 규칙
-tool/watch_build.sh → json 자동 빌드 스크립트
+docs/extension_points.md → 확장 기준
+analysis_options.yaml → lint 규칙
+tool/watch_build.sh → 빌드 자동화 스크립트
 build.yaml → explicit_to_json: true
 ✊ 프로젝트 선언
 
-이 리포지토리는 단순한 앱이 아닙니다.
-AI 협업 × 온체인 품질 기준 × 실전 로직이 결합된
-풀스택 고성능 크립토 시스템의 시작점입니다.
+이 프로젝트는 단순한 앱이 아닙니다.
+실시간 + 자동화 + AI 기반 트레이딩 프레임워크의 시작점입니다.
+모든 협업자 및 AI Agent는 위 구조를 기반으로
+클래스, 유즈케이스, 컨트롤러를 정확히 구성해야 합니다.
 
-📌 모든 협업자 및 AI Agent는 위 구조를 기반으로
-클래스, 파일, 유즈케이스, 컨트롤러 등을 정확히 생성하세요.
+## 📦 프로젝트 디렉토리 구조
+
+lib/
+├── app.dart                           # 앱 진입 설정, MaterialApp 라우팅 등
+├── core
+│   ├── api
+│   │   └── api_service.dart           # REST API 요청 (Dio 기반)
+│   ├── bridge
+│   │   └── data_bus.dart              # REST ↔ WebSocket 간 데이터 허브/변환기
+│   ├── config
+│   │   ├── app_config.dart            # 앱 환경 설정 클래스
+│   │   └── env_config.dart            # prod/dev 환경 구분 및 env 변수 정의
+│   ├── di
+│   │   ├── bindings
+│   │   │   ├── controller_binding.dart     # GetX Controller 등록
+│   │   │   ├── data_source_binding.dart    # DataSource DI 등록
+│   │   │   ├── processor_binding.dart      # 데이터 처리 계층 DI
+│   │   │   ├── repository_binding.dart     # Repository DI
+│   │   │   ├── service_binding.dart        # Core 서비스 DI (e.g. PlatformService)
+│   │   │   ├── usecase_binding.dart        # UseCase DI 등록
+│   │   │   └── view_bindings.dart          # View/Page 바인딩 관리
+│   │   └── injection_container.dart   # DI 초기화 컨테이너
+│   ├── error
+│   │   ├── exception.dart             # 예외 정의
+│   │   └── failure.dart               # 실패 응답 모델 (Either 실패 케이스)
+│   ├── lifecycle
+│   │   └── app_lifecycle_manager.dart # 앱 포그라운드/백그라운드 감지
+│   ├── logger
+│   │   └── app_logger.dart            # 공통 로거 클래스 (dev/prod 대응 포함)
+│   ├── memory
+│   │   └── object_pool.dart           # 객체 재사용 풀 (성능 최적화용)
+│   ├── navigation
+│   │   └── app_router.dart            # 라우팅 관리 (GetX Routes)
+│   ├── network                        # (비워둠) 추후 다중 네트워크 계층 도입 시 사용
+│   ├── pipeline                       # (비워둠) 고속 필터링/데이터 리듬 제어 등 스트림 파이프라인 구성용
+│   ├── scaling
+│   │   └── rate_limiter.dart          # 요청 속도 제한 유틸리티
+│   ├── services
+│   │                                   # (비어 있음) 플랫폼 서비스 통합용 (예: FCM, 공유 등)
+│   ├── socket
+│   │   ├── socket_service.dart        # WebSocket 커넥션, ping/pong, reconnect
+│   │   └── trade_pipeline.dart        # 실시간 체결 흐름 파이프라인 처리
+│   ├── storage
+│   │   └── local_storage.dart         # SharedPreferences 기반 저장소
+│   ├── streaming
+│   │   └── backpressure_controller.dart # 소켓 스트림 과부하 조절 유닛
+│   ├── theme
+│   │   ├── app_theme_manager.dart     # 테마 전환 로직
+│   │   └── app_theme.dart             # 테마 정의값 (light/dark)
+│   └── workers
+│       └── isolate_worker.dart        # Isolate 기반 비동기 처리 유닛
+
+├── data
+│   ├── datasources
+│   │   └── real_market_data_source.dart # 실제 외부 마켓 데이터 처리 소스
+│   ├── models
+│   │   ├── market_model.dart          # 마켓 정보 모델
+│   │   ├── socket_trade_message_model.dart # WebSocket 체결 메시지 모델
+│   │   └── trade_model.dart           # 일반 트레이드 데이터 모델
+│   ├── processors
+│   │   ├── trade_aggregator.dart      # 체결 데이터 집계 처리
+│   │   └── trade_processor.dart       # 체결 데이터 분석/가공 처리
+│   ├── repositories
+│   │   └── trade_repository_impl.dart # 실제 데이터 조합 구현체 (REST + 소켓 통합)
+│   └── sources
+│       ├── rest
+│       │   ├── market_data_source.dart   # REST 기반 마켓 데이터 fetch
+│       │   └── rest_trade_source.dart    # REST 기반 체결 데이터 fetch
+│       └── socket
+│           └── socket_trade_source.dart # WebSocket 기반 실시간 체결 감시
+
+├── domain
+│   ├── entities
+│   │   ├── trade.dart                 # 트레이드 도메인 모델
+│   │   └── trade.g.dart               # json_serializable 자동 생성 파일
+│   ├── events
+│   │   └── trade_event.dart           # 체결 이벤트 정의
+│   ├── repositories
+│   │   └── trade_repository.dart      # Repository 추상 인터페이스
+│   └── usecases
+│       ├── get_filtered_trades.dart   # 조건 필터링 체결 데이터
+│       ├── get_momentary_trades.dart  # 순간 체결 감지
+│       ├── get_surge_trades.dart      # 급등락 감지
+│       ├── get_volume_data.dart       # 거래량 기반 감지
+│       └── subscribe_live_trades.dart # WebSocket 기반 실시간 구독 유즈케이스
+
+├── generated
+│   ├── intl
+│   │   ├── messages_all.dart          # 다국어 메시지 all
+│   │   └── messages_en.dart           # 영어 번역 파일
+│   └── l10n.dart                      # 자동 생성된 intl 엔트리 포인트
+
+├── main.dart                          # 앱 시작점
+
+├── presentation
+│   ├── app.dart                       # 앱 외부 껍데기 / 라우터 초기화
+│   ├── common
+│   │   ├── empty_state_widget.dart    # 비어있을 때 공통 UI
+│   │   ├── error_widget.dart          # 에러 표시용 위젯
+│   │   └── loading_widget.dart        # 로딩 인디케이터
+│   ├── controllers
+│   │   ├── locale_controller.dart     # 다국어 설정
+│   │   ├── main_controller.dart       # 메인 홈 제어
+│   │   ├── momentary_controller.dart  # 순간 감지 전용 컨트롤러
+│   │   ├── surge_controller.dart      # 급등락 제어
+│   │   ├── trade_controller.dart      # 체결 데이터 제어
+│   │   └── volume_controller.dart     # 거래량 제어
+│   ├── pages
+│   │   ├── main/main_view.dart        # 메인 뷰
+│   │   ├── momentary/momentary_view.dart # 순간 감지 뷰
+│   │   ├── notifications/notifications_view.dart # 알림 페이지
+│   │   ├── settings/settings_view.dart  # 설정 페이지
+│   │   ├── splash/splash_view.dart      # 스플래시 화면
+│   │   ├── surge/surge_view.dart        # 급등락 뷰
+│   │   ├── trade/trade_view.dart        # 체결 데이터 뷰
+│   │   └── volume/volume_view.dart      # 거래량 뷰
+│   └── widgets
+│       ├── common/connection_status_bar.dart # 네트워크 상태 표시 바
+│       ├── common_app_bar.dart         # 공통 앱 바 위젯
+│       ├── drawer/app_drawer.dart      # 좌측 사이드메뉴
+│       ├── index.dart                  # export 모듈화
+│       └── trade_card_widget.dart      # 체결 카드 UI 컴포넌트
+
+└── utils
+    └── utils                          # 공통 유틸 함수 모음
+
+
+
 
 ## 📝 Changelog
 

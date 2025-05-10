@@ -1,26 +1,18 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:onbit_v2_triple/core/di/injection_container.dart';
-import 'package:onbit_v2_triple/core/navigation/app_router.dart';
+import 'package:firebase_core/firebase_core.dart';
+import 'package:onbit_v2_triple/core/di/bindings/service_binding.dart';
+import 'package:onbit_v2_triple/core/di/bindings/data_source_binding.dart';
+import 'package:onbit_v2_triple/core/di/bindings/repository_binding.dart';
+import 'package:onbit_v2_triple/core/di/bindings/usecase_binding.dart';
+import 'package:onbit_v2_triple/presentation/app.dart';
 
-void main() {
-  setupDI();
-  runApp(const MyApp());
-}
-
-class MyApp extends StatelessWidget {
-  const MyApp({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    return GetMaterialApp(
-      title: 'Onbit V2 Triple',
-      theme: ThemeData(
-        primarySwatch: Colors.blue,
-        useMaterial3: true,
-      ),
-      initialRoute: AppRouter.main,
-      getPages: AppRouter.routes,
-    );
-  }
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  await Firebase.initializeApp();
+  Get.put(ServiceBinding());
+  Get.put(DataSourceBinding());
+  Get.put(RepositoryBinding());
+  Get.put(UsecaseBinding());
+  runApp(const App());
 }
