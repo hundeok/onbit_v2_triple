@@ -32,13 +32,19 @@ jobs:
           [ -f docs/CHANGELOG.md ] && echo -e "\n\n## 📝 Changelog\n" >> gpt_context/context.md && cat docs/CHANGELOG.md >> gpt_context/context.md
           [ -f docs/module_summary.md ] && echo -e "\n\n## 📦 Module Summary\n" >> gpt_context/context.md && cat docs/module_summary.md >> gpt_context/context.md
 
-          {
-            echo "{"
-            echo "\"readme\": $([ -f README.md ] && cat README.md | jq -Rs . || echo "\"\""),"
-            echo "\"changelog\": $([ -f docs/CHANGELOG.md ] && cat docs/CHANGELOG.md | jq -Rs . || echo "\"\""),"
-            echo "\"module_summary\": $([ -f docs/module_summary.md ] && cat docs/module_summary.md | jq -Rs . || echo "\"\"")"
-            echo "}"
-          } > gpt_context/context.json
+          echo '{
+            "model": "gpt-4",
+            "messages": [
+              {
+                "role": "system",
+                "content": "너는 현재 프로젝트의 맥락을 이해해야 하는 GPT입니다. 아래 문서를 보고 기억하세요."
+              },
+              {
+                "role": "user",
+                "content": "<<README>>\n'"$(cat README.md | jq -Rs .)"'\n\n<<CHANGELOG>>\n'"$(cat docs/CHANGELOG.md | jq -Rs .)"'\n\n<<MODULE SUMMARY>>\n'"$(cat docs/module_summary.md | jq -Rs .)"'"
+              }
+            ]
+          }' > gpt_context/context.json
 
       - name: Commit & Push GPT context
         env:
