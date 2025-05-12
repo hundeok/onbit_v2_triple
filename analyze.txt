@@ -1,0 +1,57 @@
+Analyzing onbit_v2_triple...                                    
+
+warning • 'avoid_unused_parameters' is not a recognized lint rule • gpt_context/analysis_options.yaml:9:7 • undefined_lint
+   info • String literals shouldn't be concatenated by the '+' operator • lib/core/api/api_service.dart:396:36 • prefer_adjacent_string_concatenation
+   info • Use interpolation to compose strings and values • lib/core/api/api_service.dart:396:38 • prefer_interpolation_to_compose_strings
+   info • Use interpolation to compose strings and values • lib/core/api/api_service.dart:440:60 • prefer_interpolation_to_compose_strings
+warning • The value of the field '_maxCacheSize' isn't used • lib/core/bridge/signal_bus.dart:162:13 • unused_field
+warning • Unused import: 'package:get/get.dart' • lib/core/config/env_config.dart:1:8 • unused_import
+warning • Unused import: 'package:onbit_v2_triple/core/di/tags.dart' • lib/core/config/env_config.dart:4:8 • unused_import
+warning • The receiver can't be null, so the null-aware operator '?.' is unnecessary • lib/core/di/bindings/data_source_binding.dart:243:58 • invalid_null_aware_operator
+warning • The receiver can't be null, so the null-aware operator '?.' is unnecessary • lib/core/di/bindings/processor_binding.dart:204:58 • invalid_null_aware_operator
+warning • The receiver can't be null, so the null-aware operator '?.' is unnecessary • lib/core/di/bindings/repository_binding.dart:217:58 • invalid_null_aware_operator
+warning • The receiver can't be null, so the null-aware operator '?.' is unnecessary • lib/core/di/bindings/service_binding.dart:128:60 • invalid_null_aware_operator
+  error • The name 'ApiService' isn't a type, so it can't be used as a type argument • lib/core/di/bindings/service_binding.dart:203:18 • non_type_as_type_argument
+  error • The method 'ApiService' isn't defined for the type 'ServiceBinding' • lib/core/di/bindings/service_binding.dart:208:28 • undefined_method
+warning • The receiver can't be null, so the null-aware operator '?.' is unnecessary • lib/core/di/bindings/service_binding.dart:330:56 • invalid_null_aware_operator
+  error • The name 'ApiService' isn't a type, so it can't be used as a type argument • lib/core/di/bindings/service_binding.dart:357:43 • non_type_as_type_argument
+  error • The name 'ApiService' isn't a type, so it can't be used as a type argument • lib/core/di/bindings/service_binding.dart:400:18 • non_type_as_type_argument
+warning • The receiver can't be null, so the null-aware operator '?.' is unnecessary • lib/core/di/bindings/service_binding.dart:427:58 • invalid_null_aware_operator
+   info • Don't invoke 'print' in production code • lib/core/di/injection_container.dart:85:5 • avoid_print
+   info • Don't invoke 'print' in production code • lib/core/di/injection_container.dart:134:7 • avoid_print
+   info • Don't invoke 'print' in production code • lib/core/di/injection_container.dart:135:7 • avoid_print
+   info • Don't invoke 'print' in production code • lib/core/di/injection_container.dart:162:7 • avoid_print
+   info • Don't invoke 'print' in production code • lib/core/di/injection_container.dart:168:7 • avoid_print
+   info • Don't invoke 'print' in production code • lib/core/di/injection_container.dart:170:7 • avoid_print
+   info • Don't invoke 'print' in production code • lib/core/di/injection_container.dart:171:7 • avoid_print
+warning • Unused import: 'package:get/get.dart' • lib/core/error/exception.dart:1:8 • unused_import
+warning • Unused import: 'package:onbit_v2_triple/core/di/tags.dart' • lib/core/error/exception.dart:3:8 • unused_import
+  error • Invalid constant value • lib/core/error/exception.dart:48:78 • invalid_constant
+  error • Invalid constant value • lib/core/error/exception.dart:120:70 • invalid_constant
+  error • Invalid constant value • lib/core/error/failure.dart:33:68 • invalid_constant
+   info • Use 'const' for final variables initialized to a constant value • lib/core/monitoring/metric_logger.dart:188:5 • prefer_const_declarations
+  error • The implicitly invoked unnamed constructor from 'SignalEvent' has required parameters • lib/core/navigation/app_router.dart:16:3 • implicit_super_initializer_missing_arguments
+  error • The implicitly invoked unnamed constructor from 'SignalEvent' has required parameters • lib/core/navigation/app_router.dart:31:3 • implicit_super_initializer_missing_arguments
+  error • The name 'TradeView' isn't a class • lib/core/navigation/app_router.dart:58:25 • creation_with_non_type
+  error • The name 'VolumeView' isn't a class • lib/core/navigation/app_router.dart:62:25 • creation_with_non_type
+  error • The name 'SurgeView' isn't a class • lib/core/navigation/app_router.dart:66:25 • creation_with_non_type
+  error • The name 'MomentaryView' isn't a class • lib/core/navigation/app_router.dart:70:25 • creation_with_non_type
+  error • The argument type 'NetworkStatusChangedEvent' can't be assigned to the parameter type 'SignalEvent'.  • lib/core/network/connectivity_manager.dart:63:23 • argument_type_not_assignable
+  error • The method 'NetworkException' isn't defined for the type 'ConnectivityManager' • lib/core/network/connectivity_manager.dart:83:13 • undefined_method
+  error • The argument type 'ConnectivityManagerDisposedEvent' can't be assigned to the parameter type 'SignalEvent'.  • lib/core/network/connectivity_manager.dart:183:21 • argument_type_not_assignable
+   info • Use an initializing formal to assign a parameter to a field • lib/core/services/fcm_service.dart:95:8 • prefer_initializing_formals
+   info • Use an initializing formal to assign a parameter to a field • lib/core/services/fcm_service.dart:96:8 • prefer_initializing_formals
+   info • Use an initializing formal to assign a parameter to a field • lib/core/services/fcm_service.dart:97:8 • prefer_initializing_formals
+  error • Undefined class 'ApiService' • lib/data/datasources/real_market_data_source.dart:205:9 • undefined_class
+  error • Undefined class 'ApiService' • lib/data/datasources/real_market_data_source.dart:219:14 • undefined_class
+  error • 'RealMarketDataSource.getTradesByTimeRange' ('Future<List<TradeModel>> Function(String, int, int)') isn't a valid override of 'MarketDataSource.getTradesByTimeRange' ('Future<List<TradeModel>> Function(String, int, int, {int limit})') • lib/data/datasources/real_market_data_source.dart:512:28 • invalid_override
+warning • Unused import: 'package:collection/collection.dart' • lib/data/datasources/socket_trade_source.dart:4:8 • unused_import
+warning • The value of the local variable 'isolateInstance' isn't used • lib/data/datasources/socket_trade_source.dart:30:11 • unused_local_variable
+  error • Conditions must have a static type of 'bool' • lib/data/datasources/socket_trade_source.dart:346:15 • non_bool_condition
+warning • The stack trace variable 'stackTrace' isn't used and can be removed • lib/data/models/market_formatter.dart:123:17 • unused_catch_stack
+warning • The stack trace variable 'stackTrace' isn't used and can be removed • lib/data/models/market_json_parser.dart:92:17 • unused_catch_stack
+warning • The stack trace variable 'stackTrace' isn't used and can be removed • lib/data/models/market_model.dart:85:17 • unused_catch_stack
+warning • The stack trace variable 'stackTrace' isn't used and can be removed • lib/data/models/trade_model.dart:128:17 • unused_catch_stack
+  error • Undefined class 'LinkedHashMap' • lib/data/processors/trade_processor.dart:16:9 • undefined_class
+  error • The method 'LinkedHashMap' isn't defined for the type 'LruMap' • lib/data/processors/trade_processor.dart:18:48 • undefined_method
+

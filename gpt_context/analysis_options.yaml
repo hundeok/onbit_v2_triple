@@ -1,0 +1,20 @@
+include: package:flutter_lints/flutter.yaml
+
+linter:
+  rules:
+    - always_use_package_imports
+    - avoid_dynamic_calls
+    - prefer_final_locals
+    - prefer_const_constructors
+    - avoid_unused_parameters
+    - sort_constructors_first
+    - unnecessary_nullable_for_final_variable_declarations
+
+analyzer:
+  errors:
+    unused_import: error
+    dead_code: error
+    avoid_dynamic_calls: warning
+    missing_required_param: error
+  exclude:
+    - '**/*.g.dart'
